@@ -20,8 +20,8 @@ def compute_metrics(eval_pred):
         'f1' : sm.f1_score(labels, logits)
     }
     return infoDict
-def compute_objective(eval_pred):
-    return eval_pred['eval_loss']
+# def compute_objective(eval_pred):
+#     return eval_pred['eval_loss']
 
 def model_init():
     """Returns an initialized model for use in a Hugging Face Trainer."""

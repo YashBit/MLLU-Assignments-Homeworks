@@ -53,12 +53,11 @@ test_data = boolq.BoolQDataset(test_df, tokenizer)
 ## training and tuning the model. Consult the assignment handout for some
 ## sample hyperparameter values.
 training_args = TrainingArguments(
-    output_dir = "./models/",
+    output_dir = '/scratch/yb1025/',
     evaluation_strategy = "epoch",
     num_train_epochs = 3,
     per_device_train_batch_size = 8, 
     # Put a dictionary in the range for the learning rate
-    learning_rate = 1e-5
 )
 # Search for atleast 5 trials
 
@@ -73,15 +72,14 @@ training_args = TrainingArguments(
 ## and hyperparameters of your best run.
 
 #Initialising the model
-model = finetuning_utils.model_init()
-metrics = finetuning_utils.compute_metrics()
 trainer = Trainer(
     args = training_args,
     tokenizer = tokenizer,
     train_dataset = train_data,
     eval_dataset = val_data,
-    model_init = model,
-    compute_metrics = metrics
+    model_init = finetuning_utils.model_init(),
+    compute_metrics = finetuning_utils.compute_metrics(),
+    evaluation_strategy="epoch"
 )
 
 """
@@ -94,16 +92,24 @@ trainer = Trainer(
     1. MANY ARGUMENTS ARE MISSING, check documentation 
 
 """
-lrDict = {"learning_rate" : (1e-5, 5e-5)}
-trainer.hyperparameter_search(
-    direction = "maximize",
+
+
+#Create a small lambda function. 
+
+BestRun = trainer.hyperparameter_search(
+    log_to_file =True,
     backend = "ray",
     #Dictionary which returns the key of 
-    hp_space = lrDict,
-    search_alg = HyperOptSearch(), 
-    n_samples = 10, 
+    hp_space = lambda _: {
+    "learning_rate": tune.uniform(1e-5, 5e-5)
+    },
+    search_alg=BayesOptSearch(mode="min"), 
+    n_samples = 5, 
     compute_objective = lambda metrics : metrics["eval_loss"]
 )
+print(BestRun.run_id)
+print(BestRun.objective)
+print(BestRun.hyperparameters)
 
 """
 
@@ -122,3 +128,6 @@ RUNNING IT ON GREENE:
 
 
 """
+
+
+#For the best run: transformers.trainer_utils.BestRun
