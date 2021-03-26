@@ -43,8 +43,6 @@ test_data = boolq.BoolQDataset(test_df, tokenizer)
 # Try with other search algorithms and see which one work the best for you. 
 """
     EXTRA CREDIT SEARCH ALGORITHMS: GRIDSEARCH and More. Write this down in the document. 
-
-
 """
 
 
@@ -100,9 +98,7 @@ BestRun = trainer.hyperparameter_search(
     log_to_file =True,
     backend = "ray",
     #Dictionary which returns the key of 
-    hp_space = lambda _: {
-    "learning_rate": tune.uniform(1e-5, 5e-5)
-    },
+    hp_space = lambda _: {"learning_rate": tune.uniform(1e-5, 5e-5)},
     search_alg=BayesOptSearch(mode="min"), 
     n_samples = 5, 
     compute_objective = lambda metrics : metrics["eval_loss"]
@@ -112,21 +108,13 @@ print(BestRun.objective)
 print(BestRun.hyperparameters)
 
 """
-
 RETURN OF THE HYPERPARAMETER ACCESS IT AS AN ATTRIBUTE . 
-
 """
-
-
 """
-
 RUNNING IT ON GREENE: 
-
 1. SCRATCH DIRECTORY
 2. REQUEST JOb, already done by sbatch
 3. sbatch run_hyperameter_search.slurm
-
-
 """
 
 

@@ -1,6 +1,4 @@
 import torch
-import numpy as np
-from datasets import Dataset
 # Run on Google Collab/Notebook
 def encode_data(dataset, tokenizer, max_seq_length=128):
       
@@ -30,15 +28,12 @@ def encode_data(dataset, tokenizer, max_seq_length=128):
     ## Use the tokenizer provided in the argument and see the code comments above for
     ## more details.
 
-    inputF = Dataset.from_pandas(dataset)
-    tokenized = tokenizer(inputF["question"],inputF["passage"],truncation="only_second", max_length=max_seq_length,padding="max_length")
-    input_tensor = torch.LongTensor(tokenized['input_ids'])
-    attention_tensor = torch.LongTensor(tokenized['attention_mask'])
-    # tokenized = tokenizer(dataset['question'].tolist(), dataset['passage'].tolist(), truncation = True, padding = "max_length", max_length = max_seq_length)
-    # ids = tokenized.get('input_ids')
-    # mask_lst = tokenized.get('attention_mask')
-    # ids = torch.LongTensor(ids)
-    # mask_lst = torch.LongTensor(mask_lst)  
+
+    tokenized = tokenizer(dataset['question'].tolist(), dataset['passage'].tolist(), truncation = True, padding = "max_length", max_length = max_seq_length)
+    ids = tokenized.get('input_ids')
+    mask_lst = tokenized.get('attention_mask')
+    input_tensor = torch.LongTensor(ids)
+    attention_tensor = torch.LongTensor(mask_lst)  
     return input_tensor, attention_tensor
 
 
